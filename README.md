@@ -39,10 +39,11 @@ This role's tasks may be controled using the following variables in default/main
 * make_lifecycle: True or Flase
 * make_sync_plans: True or Flase
 * make_content_views: True or Flase
+Note: All of these values are currently set to False.
 
 Modify the values under satellite_volumes in default/main.yml to fit your planned storage requiremments.
 Change the satellite_data_physvol, and satellite_data_physlvm to match your target's satellite data physical volume.
-Use the "use_firewalld_services" variable to use firewalld services or firewalld ports.
+Use the "use_firewalld_services" variable to use firewalld services (set to True) or firewalld ports (set to False).
 - Uncomment commented out entires to open additional service ports.  Most dpeloyments won't require anything beyond SSH and RH-Satellite-6 services.
 
 Modify defaults/answer-file.yml and change the values to match your system's fqdn, url, and admin password.
@@ -84,13 +85,9 @@ Example: [ansible_directory]/playbook.yml
 
 Optional
 --------
-At the time of this writing, we are unable to obtain repository "product-ids" as they change for each installation.
-If you wish to use Ansible to create and populate Content Views and access keys, use the hammer command to list product ids,
-then update defaults/content-views.yml with the current product-ids.  
-Then modify the rest of this file to match your desired Content Views and activation keys, then change defaults/main.yml so that:
-  deploy_satellite: false
-  make_content_views: true
-and re-run the satelite role / main.yml.
+If you wish to use Ansible to create and populate Content Views and access keys, use the hammer command to list product ids (see above) and update defaults/content_views.yml
+Set the defaults/main.yml file so that only the content_views task runs by setting the other values to Flase (see Variabled above).
+Re-run the role playbook.
 
 License
 -------

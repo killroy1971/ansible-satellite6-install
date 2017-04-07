@@ -26,7 +26,7 @@ satellite_scenario: satellite
  ################################################
 
 # Registration enabled by default. Change to fale if you've already attached a subscription to your machine.
-rhn_registration: True
+rhn_registration: False
 
 ############################
 ##### FIREWALL VARIABLES #####
