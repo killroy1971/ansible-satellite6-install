@@ -3,18 +3,18 @@ NOTE: This is currently a development version; not all functions will be in a wo
 Ansible Satellite6-installer Role
 =================================
 
-This role is to install and provide basic configuration of Red Hat Satellite 6.2+ on a RHEL 7+ machine. 
+This role is to install and apply a basic "connected" Red Hat Satellite 6.2+ configuration. 
 
 Requirements
 ------------
-1) Ansible must be installed. (Version 2.1+ recommended).
+1) An Ansible server. (Version 2.1+ recommended).
 
-2) RHEL 7+ and RH Satellite 6.2+ with valid subscriptions.
-You must first provide a Satellite Manifest file
-for the playbook to work properly. Follow the below steps.
+2) A Red Hat registered target RHEL 7+ server/instance and an available Satellite 6.2+ subscription/entitlement.
 
-3) A valid Satellite manifest
-- Navigate and login to the [Red Hat Network](https://rhn.redhat.com)
+3) The target server/instance must have a raw disk/volume with sufficent storage, as outlined in the RH Satellite documentation.
+
+4) A valid Satellite manifest
+- Navigate and login: [Red Hat Network](https://rhn.redhat.com)
 - Select "Subscriptions"
 - Select "Satellite" under "Subscription Management Applications"
 - Select "Register a Satellite"
@@ -23,49 +23,54 @@ for the playbook to work properly. Follow the below steps.
 - Select "Download Manifest" 
 - Move manifest file into [role_name]/files/satellite_manifest.zip 
 
-4) A target Satellite server or instance 
-You should have built a target server/instance running Red Hat Enterprise Linux 7, and added a volume with sufficent storage, as outlined in the RH Satellite documentation.
-This server/instance must have a valid RHEL 7 and Satellite 6 entitlement assigned to it.
-
-
 Variables
 ---------
 This role's tasks may be controled using the following variables in default/main.yml:
-* rhn_registration: True or False
-* make_satellite: True or False
-* upload_manifest: True or Flase
-* add_repos: True or Flase
-* add_epel: True or Flase
-* make_lifecycle: True or Flase
-* make_sync_plans: True or Flase
-* make_content_views: True or Flase
 Note: All of these values are currently set to False.
 
+* rhn_registration: True or False
+  - Add the Satellite 6.2+ Pool ID to the server.
+* make_satellite: True or False
+  - Configure the raw disk/volume, set up firewalld, install Satellite packages, 
+    and set up the Satellite server using an answer file.
+* upload_manifest: True or Flase
+  - Upload the provided Satellite manifest.
+* add_repos: True or Flase
+  - Add RHEL 7, Satellite client tools, and other requested repositories.
+* add_epel: True or Flase
+  - Add the EPEL 7 yum repository.
+* make_lifecycle: True or Flase
+  - Create Satellite lifecycles: Development, Staging, and Production.
+* make_sync_plans: True or Flase
+  - Create repository synchronization schedules.
+* make_content_views: True or Flase
+  - Create Content Views and Activation Keys, and assign Activation Keys to Content Views.
+
 Modify the values under satellite_volumes in default/main.yml to fit your planned storage requiremments.
-Change the satellite_data_physvol, and satellite_data_physlvm to match your target's satellite data physical volume.
-Use the "use_firewalld_services" variable to use firewalld services (set to True) or firewalld ports (set to False).
-- Uncomment commented out entires to open additional service ports.  Most dpeloyments won't require anything beyond SSH and RH-Satellite-6 services.
+1) Change the satellite_data_physvol, and satellite_data_physlvm to match your target's satellite data physical volume.
+2) Change the "use_firewalld_services" variable to use firewalld services (set to True) or firewalld ports (set to False).
+   - Uncomment commented out entires to open additional service ports.  Most dpeloyments won't require anything beyond SSH and RH-Satellite-6 services.
+3) Modify defaults/answer-file.yml and change the values to match your system's fqdn, url, and admin password.
+   Note: Make sure your system's fqdn resples correctly via the fqdn and via the short name.  Check /etc/hosts for entries that may cause this to fail.
+   The foreman installer will test this and quit if the DNS lookup fails.
 
-Modify defaults/answer-file.yml and change the values to match your system's fqdn, url, and admin password.
-Make sure your system's fqdn resples correctly via the fqdn and via the short name.  Check /etc/hosts for entries that may cause this to fail.
-The foreman installer will test this.
+4) To add additional Red Hat provided repositories, you will need the following:
+   - Repository Name
+   - Product Name
+   - Release version: i.e. 7Server -- if one is assigned to the repository
+   - Architechtrue: x86_64, i386, noarch
+   Edit the defaults/hammer-vars.yml to add the repositories.
 
-To add additional Red Hat provided repositories, you will need the following:
-- Repository Name
-- Product Name
-- Release version: i.e. 7Server -- if one is assigned to the repository
-- Architechtrue: x86_64, i386, noarch
-Edit the defaults/hammer-vars.yml to add the repositories.
+5) To set up defaults/content_views.yml, you will need the following:
+   - The repository's product id number: i.e. Red Hat Entreprise Linux's number might be "13."
+   - The repository names associated with the product id number.
+   - The list of Content Views that you wish to create.
 
-To set up defaults/content_views.yml, you will need the following:
-- The repository's product id number: i.e. Red Hat Entreprise Linux's number might be "13."
-- The repository names associated with the product id number.
-- The list of Content Views that you wish to create.
-
-* This command wil list an organziation's available products: hammer product list --organization <organization_name>
-* This command will list a product's available repositories: hammer repository-set list --organization <organization_name> --product <product name>
-* This command will list an organization's enabled products: hammer product list --organization <organziation_name> --enabled true
-* This command will list a organizaiton's enabled repositories by product id number: hammer repository list --organziation <organization_name> --product-id <product id number>
+Obtaining information for Steps 4 and 5:
+* List an organziation's available products: hammer product list --organization <organization_name>
+* List a product's available repositories: hammer repository-set list --organization <organization_name> --product <product name>
+* List an organization's enabled products: hammer product list --organization <organziation_name> --enabled true
+* List a organizaiton's enabled repositories by product id number: hammer repository list --organziation <organization_name> --product-id <product id number>
 
 Dependencies
 ------------
@@ -83,11 +88,13 @@ Example: [ansible_directory]/playbook.yml
   roles:
     - include: satellite6-install
 
-Optional
---------
-If you wish to use Ansible to create and populate Content Views and access keys, use the hammer command to list product ids (see above) and update defaults/content_views.yml
-Set the defaults/main.yml file so that only the content_views task runs by setting the other values to Flase (see Variabled above).
-Re-run the role playbook.
+Known Issues
+------------
+A test build against an AWS instance had problems with the qpid and pulp packages.  Disabling SELinux and reinstalling all installed qpid and pulp packages resolved the issue.
+Indications:
+- The qpid daemon would not start, stating it couldn't create /var/lib/qpid/.qpid
+- Pulp workers weren't spawning.
+- Several Satellite data directories and files had incorrect SELinux tags.
 
 License
 -------
