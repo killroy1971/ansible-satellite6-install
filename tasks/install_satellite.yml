@@ -1,47 +1,32 @@
 ---
 # These tasks are to install Satellite through the CLI including answer files.
 
-## TODO: Need to work on a new answer file
-#- name: install_satellite | Copy satellite answer file
-#  template:
-#    src: satellite-answers.yaml
-#    dest: /etc/foreman-installer/scenarios.d/satellite-answers.yaml
-#  tags:
-#  - install_satellite
+- name: SATELLITE | Install Satellite | Load Satellite answer file varriables
+  include_vars: file=defaults/answer-file.yml
 
-- name: Load Satellite answer file varriables
-  include_vars: file=../vars/answer-file.yml
-
-- name: install_satellite | Verify Foreman exists
+- name: SATELLITE | Install Satellite | Verify Foreman exists
   stat:
     path: /etc/init.d/foreman
   register: foreman_location
-  tags:
-    - install_satellite
 
-- name: Copy satellite answers file to target
+- name: SATELLITE | Install Satellite | Copy satellite answers file to target
   copy:
-    src: ../templates/satellite-answers.yaml
-    dest: /etc/foreman-installer/scenarios.d/custom-satellite-answers.yaml
+    src: templates/satellite-answers.yaml
+    dest: /etc/foreman-installer/scenarios.d/custom-sat-answers.yaml
   when: foreman_location.stat.exists
-  tags:
-    - install_satellite
 
-- name: Update target Satellite answers file
-  replace: dest=/etc/foreman-installer/scenarios.d/custom-satellite-answers.yaml regexp={{ item.regex }} replace={{ item.setting }}
+- name: SATELLITE | Install Satellite | Update target Satellite answers file
+  replace: dest=/etc/foreman-installer/scenarios.d/custom-sat-answers.yaml regexp={{ item.regex }} replace={{ item.setting }}
   with_items: "{{ answer_file_settings }}"
   when: foreman_location.stat.exists
-  tags:
-    - install_satellite
 
-- name: Change default satellite answers file location to custom-satellite-answers.yml
-  replace:
-    dest: /etc/foreman-installer/scenarios.d/satellite-answers.yaml 
-    regexp: 'satellite-answers.yml'
-    replace: custom-satellite-answers.yml
+- name: SATELLITE | Install Satellite | Change default satellite answers file location to custom-sat-answers.yaml
+  replace: dest=/etc/foreman-installer/scenarios.d/satellite.yaml regexp='satellite-answers.yaml' replace=custom-sat-answers.yaml
+  when: foreman_location.stat.exists
 
-- name: install_satellite | Install Satellite with desired scenario
+- name: SATELLITE | Install Satellite | Configure and start Satellite
   command: /usr/sbin/satellite-installer --scenario "{{ satellite_scenario }}"
   when: foreman_location.stat.exists
   tags:
-    - install_satellite
+  - install_satellite
+

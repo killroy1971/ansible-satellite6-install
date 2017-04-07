@@ -1,0 +1,64 @@
+---
+# Organization to manipluate:
+satellite_organization: "DI2E"
+puppet_url: "https://ip-10-16-1-49.us-gov-west-1.compute.internal:8140"
+username: "admin"
+sat_password: "supersecret"
+
+# Additional Location name(s)
+location_names:
+  - { location: "us-gov-west-1b" }
+
+# Manifest filename
+manifest_filename: "satellite_manifest.zip"
+
+# Satellite repository List
+rhel_repositores:
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  - { product_name: 'Red Hat Gluster Storage Server for On-premise', name_repo: 'Red Hat Gluster Storage 3.1 Server (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  - { product_name: 'Red Hat Gluster Storage Server for On-premise', name_repo: 'Red Hat Gluster Storage 3.1 NFS (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  #  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server (Kickstart)', rel: '7Server', architecture: 'x86_64'}
+  #- { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Optional (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  #- { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  #- { product_name: 'Red Hat OpenStack', name_repo: 'Red Hat OpenStack Platform 8 director for RHEL 7 (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  #- { product_name: 'Red Hat OpenStack', name_repo: 'Red Hat OpenStack Platform 8 for RHEL 7 (RPMs)', rel: '7Server', architecture: 'x86_64'}
+  #- { product_name: 'Red Hat OpenStack', name_repo: 'Red Hat OpenStack Platform 8 Operational Tools for RHEL 7 (RPMs)', rel: '7Server', architecture: 'x86_64'}
+
+rhel_repositories_2:
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Satellite Tools {{ satellite_version }} for RHEL 7 Server (RPMs)', architecture: 'x86_64'}
+  - { product_name: 'Red Hat Enterprise Linux Server', name_repo: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', architecture: 'x86_64'}
+  - { product_name: 'Red Hat OpenShift Container Platform', name_repo: 'Red Hat OpenShift Container Platform 3.4 (RPMs)', architecture: 'x86_64' }
+
+# Satellite Sync-Plans
+syncronization_plans:
+  - { name: "Weekly 1 - RHEL 7", description: "Red Hat Enterperise 7 Weekly Sync", interval: 'weekly', sync_date: "2017-03-18 08:00:00", enable: "true"}
+  - { name: "Weekly 2 - OCP", description: "Red Hat OpenShift Container Platform Weekly Sync", interval: 'weekly', sync_date: "2017-03-18 08:00:00", enable: "true"}
+  - { name: "Weekly 3 - Gluster", description: "Red Hat Gluster Storage Weekly Sync", interval: 'weekly', sync_date: "2017-03-18 08:30:00", enable: "true"}
+
+# Lifecycle Environments
+lifecycle_names:
+  - { name: "development", description: "Development application packages", prior: "Library" }
+  - { name: "staging", description: "Staging application packages", prior: "development" }
+  - { name: "production", description: "Production application packages", prior: "staging" }
+
+# Repository Sync
+repository_sync:
+  - { repo_name: 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server', product_name: 'Red Hat Enterprise Linux Server' }
+  - { repo_name: 'Red Hat Satellite Tools {{ satellite_version }} for RHEL 7 Server (RPMs)', product_name: 'Red Hat Enterprise Linux Server' }
+  - { repo_name: 'Red Hat Enterprise Linux 7 Server - Extras (RPMs)', product_name: 'Red Hat Enterprise Linux Server' }
+  - { repo_name: 'Red Hat OpenShift Container Platform 3.4 RPMs x86_64', product_name: 'Red Hat OpenShift Container Platform' }
+  - { repo_name: 'Red Hat Gluster Storage 3.1 Server RPMs x86_64 7Server', product_name: 'Red Hat Gluster Storage Server for On-premise' }
+  - { repo_name: 'Red Hat Gluster Storage 3.1 NFS RPMs x86_64 7Server', product_name: 'Red Hat Gluster Storage Server for On-premise' }
+
+# EPEL 7
+epel7_repository:
+  - { product_name: 'EPEL7Server', repo_name: 'Extral Packages for Enterprise Linux 7Server x86_64', architecture: 'x86_64', gpgkey: 'EPEL7 GPG Key', checksum: 'sha256', url: 'https://dl.fedoraproject.org/pub/epel/7Server/x86_64/' }
+
+epel7_gpgkey:
+  - { name: 'EPEL7 GPG Key', key: '/root/RPM-GPG-KEY-EPEL-7Server', url: 'https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7Server' }
+
+epel7_sync_plan:
+  - { name: "Weekly 4 - EPEL 7", description: "EPEL 7 Weekly Sync", interval: 'weekly', sync_date: "2017-03-18 09:00:00", enable: "true"}
+

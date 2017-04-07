@@ -1,0 +1,33 @@
+---
+- name: SATELLITE | EPEL 7 | Load Hammer varriables
+  include_vars: file=defaults/hammer-vars.yml
+
+- name: SATELLITE | EPEL 7 | Foreman is running
+  shell: 'systemctl is-active foreman-tasks.service'
+  register: foreman_status
+
+- name: SATELLITE | EPEL 7 | Download SATELLITE GPG Key
+  get_url: url={{ item.url }} dest={{ item.key }}
+  with_items: "{{ epel7_gpgkey }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | EPEL 7 | Add SATELLITE GPG Key to Satellite
+  command: hammer --password {{ sat_password }} gpg create --organization "{{ satellite_organization }}" --name "{{ item.name }}" --key "{{ item.key }}"
+  with_items: "{{ epel7_gpgkey }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | EPEL 7 | Create SATELLITE Repoistory
+  command: hammer --password {{ sat_password }} --organization "{{ satellite_organization }}" --name "{{ item.repo_name }}" --gpg-key "{{ item.gpgkey }}" --checksum-type "{{ item.checksum }}" --content-type yum --url "{{ item.url }}"
+  with_items: "{{ epel7_repository }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | EPEL 7 | Create EPEL Sync Plan
+  command: hammer --password {{ sat_password }} sync-plan create --name "{{ item.name }}" --description "{{ item.description }}" --interval {{ item.interval }} --sync-date "{{ item.sync_date }}" --enabled "{{ item.enable }}" --organization "{{ satellite_organization }}"
+  with_items: "{{ epel7_sync_plan }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | EPEL 7 | Syncronize SATELLITE Repository
+  command: hammer --password {{ sat_password }} repository synchronize --name "{{ item.repo_name }}" --organization "{{ satellite_organization }}" --product "{{ item.product_name }}"
+  with_items: "{{ epel7_repository }}"
+  when: foreman_status.stdout == "active"
+

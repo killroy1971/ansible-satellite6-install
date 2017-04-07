@@ -1,0 +1,9 @@
+---
+## Role to deploy Satellite 6.2+
+- name: SATELLITE | Creaate content views and activation keys
+  hosts: satellite
+  vars_files:
+    - defaults/main.yml
+  remote_user: root
+  tasks:
+    - include: tasks/content-views.yml

@@ -1,0 +1,29 @@
+---
+# These tasks will use the hammer command to:
+# Assign a downloaded Satellite mainifest to the server
+# Add and schedule repository syncronatization
+# Add any requested locations (uncomment to implement)
+# Create lifecycle environments
+
+- name: SATELLITE | Add Repos | Load Hammer varriables
+  include_vars: file=defaults/hammer-vars.yml
+
+- name: SATELLITE | Add Repos | Foreman is running
+  shell: 'systemctl is-active foreman-tasks.service'
+  register: foreman_status
+
+- name: SATELLITE | Add Repos | Add Red Hat repositories to Satellite server -- those that have a "Release Version"
+  command: hammer --password {{ sat_password }} repository-set enable --name "{{ item.name_repo }}" --organization "{{ satellite_organization }}" --product "{{ item.product_name }}" --releasever "{{ item.rel }}" --basearch "{{ item.architecture }}"
+  with_items: "{{ rhel_repositores }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | Add Repos | Add Red Hat repositories to Satellite server -- those that don't have a "Release Version"
+  command: hammer --password {{ sat_password }} repository-set enable --name "{{ item.name_repo }}" --organization "{{ satellite_organization }}" --product "{{ item.product_name }}" --basearch "{{ item.architecture }}"
+  with_items: "{{ rhel_repositories_2 }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | Add Repos | Syncronize Repositoryies
+  command: hammer --password {{ sat_password }} repository synchronize --name "{{ item.repo_name }}" --organization "{{ satellite_organization }}" --product "{{ item.product_name }}"
+  with_items: "{{ repository_sync }}"
+  when: foreman_status.stdout == "active"
+

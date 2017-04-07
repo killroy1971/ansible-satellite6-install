@@ -1,0 +1,23 @@
+---
+- name: SATELLITE | Content Views | Load Hammer varriables
+  include_vars: file=defaults/content-views.yml
+
+- name: SATELLITE | Content Views | Foreman is running
+  shell: 'systemctl is-active foreman-tasks.service'
+  register: foreman_status
+
+- name: SATELLITE | Content Views | Create Satellite Content Views
+  command: hammer --password {{ sat_password }} content-view create --name "{{ item.name }}" --description "{{ item.description }}" --organization "{{ satellite_organization }}" --repositories "{{ item.repositories }}" --product-id {{ item.productid }}
+  with_items: "{{ create_content_views }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | Content Views | Add specific repositories to Content Views
+  command: hammer --password {{ sat_password }} content-view add-repository --name "{{ item.name }}" --organization "{{ satellite_organization }}" --repository "{{ item.repositories }}" --product-id {{ item.productid }}
+  with_items: "{{ add_to_content_views }}"
+  when: foreman_status.stdout == "active"
+
+- name: SATELLITE | Content Views | Create Satellite Activation Keys
+  command: hammer --password {{ sat_password }} activation-key create --organization "{{ satellite_organization }}" --name "{{ item.name }}" --description "{{ item.description }}" --content-view "{{ item.content_view }}"
+  with_items: "{{ activation_keys }}"
+  when: foreman_status.stdout == "active"
+

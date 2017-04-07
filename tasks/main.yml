@@ -2,7 +2,34 @@
 # tasks file for satellite6-install
 
 - include: registration.yml
-  when: rhn_registration
-- include: firewall.yml
+  when: rhn_registration == True
+
 - include: install_software.yml
+  when: make_satellite == True
+
+- include: firewall.yml
+  when: make_satellite == True
+
+- include: provision_satellite.yml
+  when: make_satellite == True
+
 - include: install_satellite.yml
+  when: make_satellite == True
+
+- include: upload_mainifest.yml
+  when: upload_manifest == True
+
+- include: add_repos.yml
+  when: add_repos == True
+
+- include: epel_repo.yml
+  when: add_epel == True
+
+- include: lifecycle.yml
+  when: make_lifecycle == True
+
+- include: sync_plans.yml
+  when: make_sync_plans == True
+
+- include: content_views.yml
+  when: make_content_views == True

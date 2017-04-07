@@ -7,6 +7,8 @@ Satellite Answer File
 This assumes that you have installed Satellite 6 before and that you know which varriables
 to change.  The default answers will create a connected server "satellite.example.com." 
 
+Create password hashes: openssl passwd -1 <plaintext_password>
+
 TODO: Add varriables to configure DNS/DHCP/TFTP services.
       Add varriables to set up oAuth or AD integration.
 
@@ -58,6 +60,5 @@ firewall_ports:
   - 8443/tcp (Capsule)
   - 9090/tcp (Satellite)
   - 16514/tcp (libvirt compute resources)
-
 
 

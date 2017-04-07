@@ -1,0 +1,32 @@
+---
+- name: SATELLITE | Provision Satellite Server | Check for existing physical volume
+  stat:
+    path: "{{ satellite_data_physlvm }}"
+  register: physvol
+
+- name: SATELLITE | Provision Satellite Server | Create Satellite data physical volume
+  shell: parted -s -a optimal "{{ satellite_data_physvol }}" mklabel msdos -- mkpart primary 1 -1
+  when: physvol.stat.exists == False
+
+- name: SATELLITE | Provision Satellite Server | Create Satellite data lvm physical volume
+  command: pvcreate "{{ satellite_data_physlvm }}"
+  when: physvol.stat.exists == False
+
+- name: SATELLITE | Provision Satellite Server | Create Satellite vg_data lvm volume group
+  lvg:
+    vg: "{{ satellite_volgrp }}"
+    pvs: "{{ satellite_data_physlvm }}"
+    force: no
+
+- name: SATELLITE | Provision Satellite Server | Create Satellite lvm logical volumes
+  lvol: lv={{ item.lvname }} vg={{ satellite_volgrp }} size={{ item.lvsize }} state=present
+  with_items: "{{ satellite_volumes }}"
+
+- name: SATELLITE | Provision Satellite Server | Format Satellite logical volumes
+  filesystem: fstype=xfs dev=/dev/{{ satellite_volgrp }}/{{ item.lvname }}
+  with_items: "{{ satellite_volumes }}"
+
+- name: SATELLITE | Provision Satellite Server | Add Satelite data volumes to fstab
+  mount: name={{ item.mtpoint }} src={{ item.lvpath }} fstype=xfs state=mounted
+  with_items: "{{ satellite_volumes }}"
+

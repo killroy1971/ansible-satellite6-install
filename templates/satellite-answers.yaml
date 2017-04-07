@@ -8,10 +8,10 @@
 
 ---
   capsule:
-    parent_fqdn: "{{ parent_fqdn }}"
+    parent_fqdn: parent_fqdn_name
     certs_tar:
     pulp_master: true
-    pulp_admin_password: "{{ pulp_admin_passwd }}"
+    pulp_admin_password: pulp_admin_passwd
     pulp_oauth_effective_user: admin
     pulp_oauth_key: katello
     pulp_oauth_secret:
@@ -25,24 +25,24 @@
     qpid_router_hub_port: "5646"
     qpid_router_agent_addr: "0.0.0.0"
     qpid_router_agent_port: "5647"
-    qpid_router_broker_addr: "{{ system_name }}"
+    qpid_router_broker_addr: parent_fqdn_name
     qpid_router_broker_port: "5671"
     enable_ostree: false
   certs:
     log_dir: /var/log/certs
-    node_fqdn: "{{ system_name }}"
-    generate: "{{ ca_gen_certificate }}"
+    node_fqdn: system_name
+    generate: true
     regenerate: false
     regenerate_ca: false
     deploy: true
-    ca_common_name: "{{ system_name }}"
-    country: "{{ ca_country }}"
-    state: "{{ ca_state }}"
-    city: "{{ ca_city }}"
-    org: "{{ ca_org }}"
-    org_unit: "{{ ca_org_unit }}"
+    ca_common_name: system_name
+    country: ca_country
+    state: "ca_state"
+    city: "ca_city"
+    org: "ca_org"
+    org_unit: "unit_org"
     expiration: "7300"
-    ca_expiration: "{{ ca_crt_organization }}"
+    ca_expiration: "ca_crt_expiration"
     server_cert:
     server_key:
     server_cert_req:
@@ -52,10 +52,10 @@
     password_file_dir: "certs::params::password_file_dir"
     user: root
     group: foreman
-    default_ca_name: "{{ ca_default_name }}"
-    server_ca_name: "{{ ca_default_server_name }}"
+    default_ca_name: ca_default_name
+    server_ca_name: ca_default_sever_name
   foreman:
-    foreman_url: "{{ system_name_https }}"
+    foreman_url: "https_url_entry"
     puppetrun: false
     unattended: true
     authentication: true
@@ -64,7 +64,7 @@
     passenger_ruby_package: tfm-rubygem-passenger-native
     plugin_prefix: tfm-rubygem-foreman_
     use_vhost: true
-    servername: "{{ system_name }}"
+    servername: system_name
     serveraliases:
       - foreman
     ssl: true
@@ -82,8 +82,8 @@
     db_host:
     db_port:
     db_database:
-    db_username: "{{ satellite_db_username }}"
-    db_password: "{{ satellite_db_password }}"
+    db_username: satellite_db_username
+    db_password: satellite_db_password
     db_sslmode:
     db_pool: 5
     apipie_task: "apipie:cache:index"
@@ -111,13 +111,13 @@
     passenger_prestart: true
     passenger_min_instances: "1"
     passenger_start_timeout: "600"
-    admin_username: "{{ satellite_admin_user }}"
-    admin_password: "{{ satellite_admin_passwd }}"
+    admin_username: satellite_admin_user
+    admin_password: satellite_admin_passwd
     admin_first_name:
     admin_last_name:
     admin_email:
-    initial_organization: "{{ satellite_initial_organization }}"
-    initial_location: "{{ satellite_initial_location }}"
+    initial_organization: satellite_initial_organization
+    initial_location: satellite_initial_location
     ipa_authentication: false
     http_keytab: /etc/httpd/conf/http.keytab
     pam_service: foreman
@@ -174,7 +174,7 @@
     foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
     foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
     trusted_hosts:
-      - "{{ system_name }}"
+      - system_name
     ssl_disabled_ciphers: []
     manage_sudoersd: true
     use_sudoersd: true
@@ -198,14 +198,14 @@
     puppetssh_wait: false
     salt_puppetrun_cmd: puppet.run
     puppet_user: root
-    puppet_url: "{{ system_name_puppet }}"
+    puppet_url: "puppet_url_https"
     puppet_ssl_ca: /var/lib/puppet/ssl/certs/ca.pem
-    puppet_ssl_cert: /var/lib/puppet/ssl/certs/"{{ system_name }}".pem
-    puppet_ssl_key: /var/lib/puppet/ssl/private_keys/"{{ system_name }}".pem
+    puppet_ssl_cert: /var/lib/puppet/ssl/certs/system_name.pem
+    puppet_ssl_key: /var/lib/puppet/ssl/private_keys/system_name.pem
     puppet_use_environment_api:
     templates: false
     templates_listen_on: both
-    template_url: "{{ system_name_http }}"
+    template_url: "template_http_url"
     logs: false
     logs_listen_on: https
     tftp: false
@@ -254,7 +254,7 @@
     dns_server: "127.0.0.1"
     dns_ttl: "86400"
     dns_tsig_keytab: /etc/foreman-proxy/dns.keytab
-    dns_tsig_principal: "{{ dns_tsig_principal_entry }}"
+    dns_tsig_principal: dns_tsig_principal_entry
     dns_forwarders: []
     virsh_network: default
     bmc: false
@@ -268,8 +268,8 @@
     freeipa_remove_dns: true
     keyfile: /etc/rndc.key
     register_in_foreman: true
-    foreman_base_url: "{{ system_name_https }}"
-    registered_name: "{{ system_name }}"
+    foreman_base_url: "https_url_entry"
+    registered_name: system_name
     registered_proxy_url:
     oauth_effective_user: admin
     oauth_consumer_key: C9vvEUHgxrpbLqMBQBfM6sYxwSKHFzdt
@@ -296,7 +296,7 @@
     pulpnode_enabled: false
     version:
     group:
-    pulp_url: "{{ system_name_https }}/pulp"
+    pulp_url: "https_url_entry/pulp"
     pulp_dir: /var/lib/pulp
     pulp_content_dir: /var/lib/pulp/content
     mongodb_dir: /var/lib/mongodb

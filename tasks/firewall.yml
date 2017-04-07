@@ -1,5 +1,8 @@
 ---
-- name: firewall | Install Firewalld
+- name: SATELLITE | Firewall | Load firewall varriables
+  include_vars: file=defaults/main.yml
+
+- name: SATELLITE | Firewall | Install Firewalld
   yum:
     name: firewalld
     state: present
@@ -7,7 +10,7 @@
   tags:
     - firewalld
 
-- name: firewall | Enable and Start Firewalld
+- name: SATELLITE | Firewall | Enable and Start Firewalld
   service:
     name: firewalld
     enabled: yes
@@ -15,28 +18,26 @@
   tags:
     - firewalld
 
-- name: firewall | Set hostname
-  command: hostnamectl set-hostname {{ hostname_full }}
-
-- name: firewall | Add hostname to /etc/hosts
-  lineinfile:
-    dest: /etc/hosts
-    line: "{{ ip_address_sat }} {{ hostname_full }} {{ hostname_short }}"
-  tags:
-    - hostname
-
-- name: firewall | Enable ports in firewall
+- name: SATELLITE | Firewall | Enable ports in firewall
   firewalld:
     port: "{{ item }}"
     permanent: yes
     state: enabled
   with_items:
     - "{{ firewall_ports }}"
+  notify: firewalld_reload
+  tags:
+    - firewalld
+  when: use_firewalld_services == False
 
-- name: firewall | Enable service in firewall
+- name: SATELLITE | Firewall | Enable service in firewall
   firewalld:
     service: "{{ item }}"
     permanent: yes
     state: enabled
   with_items:
     - "{{ firewall_services }}"
+  notify: firewalld_reload
+  tags:
+    - firewalld
+  when: use_firewalld_services == True

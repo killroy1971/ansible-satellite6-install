@@ -1,0 +1,13 @@
+---
+- name: SATELLITE | Sync Plans | Load Hammer varriables
+  include_vars: file=defaults/hammer-vars.yml
+
+- name: SATELLITE | Sync Plans | Foreman is running
+  shell: 'systemctl is-active foreman-tasks.service'
+  register: foreman_status
+
+- name: SATELLITE | Sync Plans | Create Satellite Sync Plans
+  command: hammer --password {{ sat_password }} sync-plan create --name "{{ item.name }}" --description "{{ item.description }}" --interval {{ item.interval }} --sync-date "{{ item.sync_date }}" --enabled "{{ item.enable }}" --organization "{{ satellite_organization }}"
+  with_items: "{{ syncronization_plans }}"
+  when: foreman_status.stdout == "active"
+

@@ -1,2 +1,105 @@
 ---
-# defaults file for satellite6-install
+# vars file for satellite6-install
+
+satellite_fqdn: "sat1-docp-gw1a.aws-openshift.di2e.net"
+ 
+make_satellite: False
+upload_manifest: False
+add_repos: False
+add_epel: False
+make_lifecycle: False
+make_sync_Plans: False
+make_content_views: False
+
+ ########################
+##### MISC VARIABLES #####
+ ########################
+
+# Desired Satellite version
+satellite_version: 6.2
+
+# Default Satellite Scenario
+satellite_scenario: satellite
+
+ ################################################
+##### RED HAT NETWORK REGISTRATION VARIABLES #####
+ ################################################
+
+# Registration enabled by default. Change to fale if you've already attached a subscription to your machine.
+rhn_registration: True
+
+############################
+##### FIREWALL VARIABLES #####
+############################
+
+use_firewalld_services: true
+
+# List of service to add into the firewall via Firewalld
+# See README.md for an explanation.
+firewall_services:
+  - ssh
+  - RH-Satellite-6
+# - dns
+# - dhcp
+# - dhcpv6
+# - tftp
+# - libvirt-tls
+# - ldap
+# - ldaps
+# - docker-registry
+# - vnc-server
+
+# List of ports to add into the firewall via Firewalld
+# See README.md for an explanation.
+firewall_ports:
+# - 22/tcp
+# - 53/udp
+# - 53/tcp
+# - 67/udp
+# - 68/udp
+# - 69/udp
+# - 80/tcp
+# - 389/tcp
+# - 443/tcp
+# - 639/tcp
+# - 5000/tcp
+# - 5646/tcp
+# - 5647/tcp
+# - 5671/tcp
+# - 5674/tcp
+  - 7911/tcp
+  - 8000/tcp
+# - 8140/tcp
+  - 8443/tcp
+# - 9090/tcp
+# - 16514/tcp
+
+ ##########################################
+ ##### REPOSITORY AND PACKAGE VARIABLES ###
+ ##########################################
+
+# Packages to be installed via YUM. Add another line for any additional
+# software to install.
+packages_list:
+  - satellite
+  - firewalld
+  - wget
+  - git
+  - net-tools
+  - bash-completion
+  - screen
+  - vim-*
+  - chrony
+  - lvm2
+
+satellite_data_physvol: /dev/xvdc
+satellite_data_physlvm: /dev/xvdc1
+satellite_volgrp: vg_data
+
+satellite_volumes:
+  - { lvname: "lv_mongodb", lvsize: "50G", mtpoint: "/var/lib/mongodb", lvpath: "/dev/mapper/vg_data-lv_mongodb" }
+  - { lvname: "lv_pulp", lvsize: "500G", mtpoint: "/var/lib/pulp", lvpath: "/dev/mapper/vg_data-lv_pulp" }
+  - { lvname: "lv_pulp_cache", lvsize: "10G", mtpoint: "/var/cache/pulp", lvpath: "/dev/mapper/vg_data-lv_pulp_cache" }
+  - { lvname: "lv_qpidd", lvsize: "2G", mtpoint: "/var/lib/qpidd", lvpath: "/dev/mapper/vg_data-lv_qpidd" }
+  - { lvname: "lv_pgsql", lvsize: "10G", mtpoint: "/var/lib/pgsql", lvpath: "/dev/mapper/vg_data-lv_pgsql" }
+
