@@ -16,6 +16,11 @@
   with_items: "{{ add_to_content_views }}"
   when: foreman_status.stdout == "active"
 
+- name: SATELLITE | Content Views | Publish Content Views -- Note: This will take a while.  Be paitent.
+  command: hammer --password {{ sat_password }} content-view publish --name "{{ item.name }}" --organization "{{ satellite_organization }}" 
+  with_items: "{{ add_to_content_views }}"
+  when: foreman_status.stdout == "active"
+
 - name: SATELLITE | Content Views | Create Satellite Activation Keys
   command: hammer --password {{ sat_password }} activation-key create --organization "{{ satellite_organization }}" --name "{{ item.name }}" --description "{{ item.description }}" --content-view "{{ item.content_view }}"
   with_items: "{{ activation_keys }}"
