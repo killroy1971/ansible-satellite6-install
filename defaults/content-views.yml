@@ -8,17 +8,16 @@ sat_password: "supersecret"
 # Content Views
 create_content_views:
   - { name: "default", description: "Default Red Hat Server", repositories: "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server, Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64", productid: "13" }
-  - { name: "ocp-node", description: "OpenShift Container Platform Nodes", repositories: "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server, Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64, Red Hat Enterprise Linux 7 Server - Extras RPMs x86_64", productid: "13" }
+  - { name: "ocp-node", description: "OpenShift Container Platform Nodes", repositories: "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server, Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64, Red Hat Enterprise Linux 7 Server - Extras RPMs x86_64, Red Hat Enterprise Linux 7 Server - Optional RPMs x86_64 7Server", productid: "13" }
   - { name: "gluster-node", description: "OpenShift Container Platform Nodes", repositories: "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server, Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64", productid: "13" }
 
 add_to_content_views:
   - { name: "ocp-node", repositories: "Red Hat OpenShift Container Platform 3.4 RPMs x86_64", productid: "90" }
-  - { name: "gluster-node", repositories: "Red Hat Gluster Storage 3.1 NFS RPMs x86_64 7Server", productid: "88" }
   - { name: "gluster-node", repositories: "Red Hat Gluster Storage 3.1 Server RPMs x86_64 7Server", productid: "88" }
 
 # Activation Keys
 activation_keys:
-  - { name: "ocp-node-key", description: "Openshift Container Platform Activation Key", content_view: "ocp-node" }
-  - { name: "gluster-node-key", description: "Gluster Storage Node Activation Key", content_view: "gluster-node" }
-  - { name: "default-key", description: "Default Red Hat Activation Key", content_view: "default" }
+  - { name: "ocp-node-key", description: "Openshift Container Platform Activation Key", content_view: "ocp-node", lifecyle: "Library" }
+  - { name: "gluster-node-key", description: "Gluster Storage Node Activation Key", content_view: "gluster-node", lifecyle: "Library" }
+  - { name: "default-key", description: "Default Red Hat Activation Key", content_view: "default", lifecycle: "Library" }
 

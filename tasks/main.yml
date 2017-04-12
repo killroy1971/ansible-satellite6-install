@@ -2,7 +2,7 @@
 # tasks file for satellite6-install
 
 - include: registration.yml
-  when: rhn_registration == True
+  when: standalone_task == True 
 
 - include: install_software.yml
   when: make_satellite == True

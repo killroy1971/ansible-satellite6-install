@@ -28,8 +28,8 @@ Variables
 This role's tasks may be controled using the following variables in default/main.yml:
 Note: All of these values are currently set to False.
 
-* rhn_registration: True or False
-  - Add the Satellite 6.2+ Pool ID to the server.
+*  standalone_task: True or False
+  - Add the Satellite 6.2+ Pool ID to the server, clear the yum cache, and update all packages.
 * make_satellite: True or False
   - Configure the raw disk/volume, set up firewalld, install Satellite packages, 
     and set up the Satellite server using an answer file.
@@ -46,10 +46,12 @@ Note: All of these values are currently set to False.
 * make_content_views: True or Flase
   - Create Content Views and Activation Keys, and assign Activation Keys to Content Views.
 
-Modify the values under satellite_volumes in default/main.yml to fit your planned storage requiremments.
 1) Change the satellite_data_physvol, and satellite_data_physlvm to match your target's satellite data physical volume.
+   Set the lvm volume sizes to match your satelite server's data volume requirements.
+
 2) Change the "use_firewalld_services" variable to use firewalld services (set to True) or firewalld ports (set to False).
    - Uncomment commented out entires to open additional service ports.  Most dpeloyments won't require anything beyond SSH and RH-Satellite-6 services.
+
 3) Modify defaults/answer-file.yml and change the values to match your system's fqdn, url, and admin password.
    Note: Make sure your system's fqdn resples correctly via the fqdn and via the short name.  Check /etc/hosts for entries that may cause this to fail.
    The foreman installer will test this and quit if the DNS lookup fails.
@@ -91,6 +93,7 @@ Example: [ansible_directory]/playbook.yml
 Known Issues
 ------------
 A test build against an AWS instance had problems with the qpid and pulp packages.  Disabling SELinux and reinstalling all installed qpid and pulp packages resolved the issue.
+
 Indications:
 - The qpid daemon would not start, stating it couldn't create /var/lib/qpid/.qpid
 - Pulp workers weren't spawning.

@@ -3,6 +3,7 @@
 
 satellite_fqdn: "sat1-docp-gw1a.aws-openshift.di2e.net"
  
+standalone_task: False
 make_satellite: False
 upload_manifest: False
 add_repos: False
@@ -88,7 +89,8 @@ packages_list:
   - net-tools
   - bash-completion
   - screen
-  - vim-*
+  - vim-enhanced
+  - vim-minimal
   - chrony
   - lvm2
 

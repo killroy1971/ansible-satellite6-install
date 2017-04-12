@@ -1,10 +1,4 @@
 ---
-# These tasks will use the hammer command to:
-# Assign a downloaded Satellite mainifest to the server
-# Add and schedule repository syncronatization
-# Add any requested locations (uncomment to implement)
-# Create lifecycle environments
-
 - name: SATELLITE | Add Repos | Load Hammer varriables
   include_vars: file=defaults/hammer-vars.yml
 

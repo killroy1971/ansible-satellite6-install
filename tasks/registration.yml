@@ -12,3 +12,18 @@
   tags:
     - rhn
   ignore_errors: yes
+
+- name: SATELLITE | Registration | Clear out existing repos
+  command: subscription-manager repos --disable "*"
+
+- name: SATELLITE | Registration | Enable the correct repos for Satellite
+  command: subscription-manager repos  --enable rhel-7-server-satellite-{{satellite_version}}-rpms --enable rhel-7-server-rpms --enable rhel-server-rhscl-7-rpms
+
+- name: SATELLITE | Registration | Clean out any residual metadata from old repositories
+  command: yum clean all
+
+- name: SATELLITE | Registration | Update currently installed  packages
+  yum:
+    name: "*"
+    state: latest
+
