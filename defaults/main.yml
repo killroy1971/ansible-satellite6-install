@@ -1,7 +1,7 @@
 ---
 # vars file for satellite6-install
 
-satellite_fqdn: "sat1-docp-gw1a.aws-openshift.di2e.net"
+satellite_fqdn: "satellite.example.com"
  
 standalone_task: False
 make_satellite: False

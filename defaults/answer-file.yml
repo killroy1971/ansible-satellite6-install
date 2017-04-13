@@ -1,28 +1,27 @@
 ---
 answer_file_settings:
-  - { regex: 'parent_fqdn_name', setting: "sat1-docp-gw1a.aws-openshfit.di2e.net" }
+  - { regex: 'parent_fqdn_name', setting: "satellite.example.com" }
   - { regex: 'pulp_admin_passwd', setting: "xUnZtXuoBXW5cjKtBhxZVipYBndx7g6V" }
-  - { regex: 'satellite_initial_organization', setting: "DI2E" }
+  - { regex: 'satellite_initial_organization', setting: "mothership" }
   - { regex: 'satellite_initial_location', setting: "home" }
   - { regex: 'satellite_admin_user', setting: "admin" }
   - { regex: 'satellite_admin_passwd', setting: "supersecret" }
   - { regex: 'satellite_db_username', setting: "foreman" }
   - { regex: 'satellite_db_password', setting: "supersecret" }
-  - { regex: 'system_name', setting: "sat1-docp-gw1a.aws-openshfit.di2e.net" }
-  - { regex: 'template_http_url', setting: "http://sat1-docp-gw1a.aws-openshfit.di2e.net:8000" }
-  - { regex: 'https_url_entry', setting: "https://sat1-docp-gw1a.aws-openshfit.di2e.net" }
-  - { regex: 'puppet_url_https', setting: "https://sat1-docp-gw1a.aws-openshfit.di2e.net:8140" }
-  - { regex: 'dns_tsig_principal_entry', setting: "foremanproxy/sat1-docp-gw1a.aws-openshfit.di2e.net@US-GOV-WEST-1.COMPUTE.INTERNAL" }
+  - { regex: 'system_name', setting: "satellite.example.com" }
+  - { regex: 'template_http_url', setting: "http://satellite.example.com:8000" }
+  - { regex: 'https_url_entry', setting: "https://satellite.example.com" }
+  - { regex: 'puppet_url_https', setting: "https://satellite.example.com:8140" }
+  - { regex: 'dns_tsig_principal_entry', setting: "foremanproxy/satellite.example.com@US-GOV-WEST-1.COMPUTE.INTERNAL" }
   - { regex: 'ca_gen_certificate', setting: "true" }
   - { regex: 'ca_country', setting: "US" }
-  - { regex: 'ca_state', setting: "Virginia" }
-  - { regex: 'ca_city', setting: "Herndon" }
-  - { regex: 'ca_org', setting: "DI2E" }
+  - { regex: 'ca_state', setting: "North Carolina" }
+  - { regex: 'ca_city', setting: "Raleigh" }
+  - { regex: 'ca_org', setting: "mothership" }
   - { regex: 'org_unit', setting: "OCP" }
   - { regex: 'ca_crt_expiration', setting: "36500" }
   - { regex: 'ca_default_name', setting: "katello-default-ca" }
   - { regex: 'ca_default_sever_name', setting: "katello-server-ca" }
 
 
-# TODO: Currently, the password entry is put in cleartext without quotation marks.  Idealy, we want to either use a hashed password,
-# or put the cleartext password in quotation marks so it will be used as the password for that item.
+# TODO: Currently, the admin password entry is put in cleartext.  Idealy, we want to either use a hashed password.  What hashing format does this entry require?

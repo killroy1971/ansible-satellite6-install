@@ -1,8 +1,6 @@
 ---
 # Organization to manipluate:
-satellite_organization: "DI2E"
-puppet_url: "https://ip-10-16-1-49.us-gov-west-1.compute.internal:8140"
-username: "admin"
+satellite_organization: "mothership"
 sat_password: "supersecret"
 
 # Additional Location name(s)

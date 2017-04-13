@@ -25,7 +25,7 @@ Requirements
 
 Variables
 ---------
-This role's tasks may be controled using the following variables in default/main.yml:
+This role's tasks may be controled using the following variables in defaults/main.yml:
 Note: All of these values are currently set to False.
 
 *  standalone_task: True or False
@@ -56,19 +56,22 @@ Note: All of these values are currently set to False.
    Note: Make sure your system's fqdn resples correctly via the fqdn and via the short name.  Check /etc/hosts for entries that may cause this to fail.
    The foreman installer will test this and quit if the DNS lookup fails.
 
-4) To add additional Red Hat provided repositories, you will need the following:
+4) Modify defaults/hammer-vars.yml and change the satellite_organization and sat_password accordingly.  
+   Note: sat_password is cleartext, and should match the "admin" user's password from answer-file.yml
+
+5) To add additional Red Hat provided repositories, you will need the following:
    - Repository Name
    - Product Name
    - Release version: i.e. 7Server -- if one is assigned to the repository
    - Architechtrue: x86_64, i386, noarch
    Edit the defaults/hammer-vars.yml to add the repositories.
 
-5) To set up defaults/content_views.yml, you will need the following:
+6) To set up defaults/content_views.yml, you will need the following:
    - The repository's product id number: i.e. Red Hat Entreprise Linux's number might be "13."
    - The repository names associated with the product id number.
    - The list of Content Views that you wish to create.
 
-Obtaining information for Steps 4 and 5:
+Obtaining information for Steps 5 and 6:
 * List an organziation's available products: hammer product list --organization <organization_name>
 * List a product's available repositories: hammer repository-set list --organization <organization_name> --product <product name>
 * List an organization's enabled products: hammer product list --organization <organziation_name> --enabled true
@@ -80,7 +83,7 @@ None
 
 Running the playbook
 --------------------
-If running main.yml directly from the role directory, make update hosts.target with the address corresponding to your target server.
+If running main.yml directly from the role directory, make update hosts entry with the address or hostname corresponding to your target server/instance.
 
 If intended for use with other roles, include the role in a playbook located at your top level Ansible directory.
 
